@@ -96,9 +96,12 @@ exports.editRegisterController = async (req, res) => {
         const existingUser = await users.findOne({email,password})
         if(existingUser){
             const token = jwt.sign({ userId: existingUser._id }, process.env.JWTPASSWORD);
+
             //console.log('Generated Token:', token);
             res.status(200).json({user:existingUser,token})
         }
+
+        
         else{
            
            
@@ -111,4 +114,8 @@ exports.editRegisterController = async (req, res) => {
     } 
 
 
+
+
+
    
+

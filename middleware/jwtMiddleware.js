@@ -32,7 +32,9 @@ const jwtMiddleware = (req, res, next) => {
 module.exports = jwtMiddleware;
  */
 
-const jwt = require('jsonwebtoken')
+
+
+ const jwt = require('jsonwebtoken')
 const jwtMiddleware = (req,res,next)=>{
     console.log(`inside jwt middleware`);
 
@@ -40,9 +42,13 @@ const jwtMiddleware = (req,res,next)=>{
     console.log(token);
     if(token){
         try{
-        const jwtResponse = jwt.verify(token,process.env.JWTPASSWORD)
+       const jwtResponse = jwt.verify(token,process.env.JWTPASSWORD) 
+        
         console.log(jwtResponse);
-        req.userId = jwtResponse.userId
+         req.userId = jwtResponse.userId
+         req.role = jwtResponse.role
+        
+      
          next() //request middleware to controller
         
     }
@@ -55,3 +61,5 @@ const jwtMiddleware = (req,res,next)=>{
    
 }
 module.exports = jwtMiddleware
+
+

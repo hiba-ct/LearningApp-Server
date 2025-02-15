@@ -10,7 +10,7 @@ const  courseController  = require('../controller/courseController')
 const  studentsController  = require('../controller/studentsController')
 const  servicesController  = require('../controller/servicesController')
 const  teachersController  = require('../controller/teachersController')
-
+const  chatBoxController  = require('../controller/chatBoxController')
 const multerMiddleware = require('../middleware/multerMiddleware')
 
 
@@ -126,6 +126,10 @@ router.delete('/teachers/:id/remove',jwtMiddleware,teachersController.removeTeac
 //admin/10/edit:http://localhost:3000/services/id/edit
 router.put('/admin/:id/edit',jwtMiddleware,userController.editRegisterController);
 
+//message
+router.get('/messages', jwtMiddleware, chatBoxController.getAllMessagesController);
+router.post('/sendmessage', chatBoxController.sendMessageController);
+ router.post('/replymessage/:messageId',jwtMiddleware,chatBoxController.replyMessageController); 
 
-
+ router.delete("/deleteMessage/:messageId", jwtMiddleware, chatBoxController.removeMessgeController);
 module.exports = router 

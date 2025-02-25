@@ -11,6 +11,7 @@ const  studentsController  = require('../controller/studentsController')
 const  servicesController  = require('../controller/servicesController')
 const  teachersController  = require('../controller/teachersController')
 const  chatBoxController  = require('../controller/chatBoxController')
+
 const multerMiddleware = require('../middleware/multerMiddleware')
 
 
@@ -31,10 +32,14 @@ router.post('/login',userController.loginController)
 
 //login : http://localhost:3000/submit
 router.post('/submit', customerController.submitController);
+//all messages
+router.get('/registers', userController.allRegistersController);
+
+
 
 //all-customers :http://localhost:3000/all-courses
 router.get('/all-submit', jwtMiddleware, customerController.allsubmitController);
-//teachers/id/remove:http://localhost:3000/user-services/id/remove
+//contact/id/remove:http://localhost:3000/user-services/id/remove
 router.delete('/contact/:id/remove',jwtMiddleware,customerController.removeSubmitController);
 
 
@@ -122,14 +127,40 @@ router.put('/teachers/:id/edit',jwtMiddleware,multerMiddleware.single('teachersI
 //teachers/id/remove:http://localhost:3000/user-services/id/remove
 router.delete('/teachers/:id/remove',jwtMiddleware,teachersController.removeTeachersController);
 
-//editadmin
+
+
+
+
+//editadmin for settings
 //admin/10/edit:http://localhost:3000/services/id/edit
-router.put('/admin/:id/edit',jwtMiddleware,userController.editRegisterController);
+router.put('/admin/:id/edit',jwtMiddleware,userController.editAdminDetails);
+//get admin details for settings
+router.get("/admindetails/:id", userController.getAdminDetails);
 
-//message
+
+
+//all messages
 router.get('/messages', jwtMiddleware, chatBoxController.getAllMessagesController);
-router.post('/sendmessage', chatBoxController.sendMessageController);
- router.post('/replymessage/:messageId',jwtMiddleware,chatBoxController.replyMessageController); 
+//send message
+router.post('/sendmessage', jwtMiddleware,chatBoxController.sendMessageController);
 
+//reply message
+ router.post('/replymessage/:messageId',jwtMiddleware,chatBoxController.replyMessageController); 
+//delete message
  router.delete("/deleteMessage/:messageId", jwtMiddleware, chatBoxController.removeMessgeController);
+ router.delete("/deletereply/:messageId/reply", jwtMiddleware, chatBoxController.removeReplyController);
+//usermessages
+ router.get('/usermessages', jwtMiddleware, chatBoxController.userMessageController);
+
+
+
+
+
+
+
+
+
+
+
+ 
 module.exports = router 

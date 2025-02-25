@@ -4,9 +4,23 @@ const chatMessageSchema = new mongoose.Schema({
   sender: { type: String,
     enum: ['admin', 'student'],
      default: 'student' },
-  message: {type:String},
-  reply:{ type: String, default: null },
+  
+     message: {type:String},
+  
+  
+  reply:{ 
+    type: String,
+     default: null 
+    },
+  
+  
   role:{type:String},
+  
+ /*   userId:{
+    type:String,
+    required:true
+},  */userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "users" },
+
   timestamp: { type: Date, default: Date.now }
 });
 

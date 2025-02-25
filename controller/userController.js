@@ -35,56 +35,83 @@ exports.registerController = async (req, res) => {
 
 
 
+exports.allRegistersController = async(req,res)=>{
+    console.log("inside allRegisterController");
+
+    try{
+        const allUsers = await users.find()
+        res.status(200).json(allUsers)
+    }catch(err){
+res.status(401).json(err)
+    }
+}
+
+
+
 //updateRegister
 
 
 
-
-
-
-
-exports.editRegisterController = async (req, res) => {
-    console.log('Inside editRegisterController');
+exports.editAdminDetails = async (req, res) => {
+    console.log("Inside editAdminDetails");
     const id = req.params.id;
-
-    const { username, email, password, role } = req.body;
+    const { username, email, password } = req.body;
 
     try {
-        // Find the user by ID
-        const existingUser = await users.findById(id);
-        if (!existingUser) {
-            return res.status(404).json({ message: 'User not found' });
+        // Find user by ID and check if role is "admin"
+        const admin = await users.findOne({ _id: id, role: "admin" });
+
+        if (!admin) {
+            return res.status(404).json({ message: "Admin not found or not authorized" });
         }
 
         // Update fields conditionally
-        if (username) existingUser.username = username;
-        if (email) existingUser.email = email;
+        if (username) admin.username = username;
+        if (email) admin.email = email;
 
         // Hash the password if it's being updated
         if (password) {
             /* const hashedPassword = await bcrypt.hash(password, 10); */
-            existingUser.password = password;
+            admin.password = password;
         }
 
-        // Update the role if provided
-        if (role) existingUser.role = role
+        // Save the updated admin details
+        const updatedAdmin = await admin.save();
 
-        // Save the updated user
-        const updatedUser = await existingUser.save();
-
-        res.status(200).json({ message: 'User updated successfully', user: updatedUser });
+        res.status(200).json({ message: "Admin updated successfully", user: updatedAdmin });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Error updating user', error: err });
+        res.status(500).json({ message: "Error updating admin details", error: err });
     }
 };
 
 
 
+// Get admin details by ID
+exports.getAdminDetails = async (req, res) => {
+    console.log("inside admindetails")
+    try {
+        const { id } = req.params; // Get the admin ID from params
+
+        // Find user by ID and check if role is "admin"
+        const admin = await users.findOne({ _id: id, role: "admin" });
+
+        if (!admin) {
+            return res.status(404).json({ message: "Admin not found or not authorized" });
+        }
+
+        res.status(200).json(admin);
+    } catch (error) {
+        console.error("Error fetching admin details:", error);
+        res.status(500).json({ message: "Error fetching admin details" });
+    }
+};
+
+
 
 // Login controller
 
- exports.loginController = async(req,res)=>{
+/*  exports.loginController = async(req,res)=>{
     console.log('inside loginController')
     const{email,password}=req.body
     console.log(email,password);
@@ -112,10 +139,37 @@ exports.editRegisterController = async (req, res) => {
             res.status(401).json(error)
         }
     } 
+ */
 
-
-
-
+   
+    
+    exports.loginController = async (req, res) => {
+        console.log("inside loginController");
+        const { email, password } = req.body;
+      
+        try {
+          const existingUser = await users.findOne({ email, password });
+      
+          if (existingUser) {
+            console.log("User found, role:", existingUser.role); // Debugging
+      
+            // ✅ Ensure role is included in token
+            const token = jwt.sign(
+              { userId: existingUser._id, role: existingUser.role }, // Include role
+              process.env.JWTPASSWORD,
+            /*   { expiresIn: "1h" }  */// Optional expiry
+            );
+      
+            res.status(200).json({ user: existingUser, token });
+          } else {
+            res.status(404).json("Account does not exist");
+          }
+        } catch (error) {
+          console.error("Login Error:", error);
+          res.status(401).json(error);
+        }
+      };
+      
 
    
 

@@ -16,15 +16,12 @@ const userSchema =new mongoose.Schema({
         required:true,
         type:String
     },
+   
     role: { type: String,
          enum: ['admin', 'student'],
           default: 'student' }
 
-        /*   userId:{
-            required:true,
-        type:String
-          }
- */
+       
 })
 const users =mongoose.model("users",userSchema)
 module.exports = users

@@ -32,7 +32,7 @@ pfServer.listen(PORT, () => {
 });
 
 // Sample root route
-pfServer.get('/', (req, res) => {
+ pfServer.get('/', (req, res) => {
     res.status(200).send('<h1 style="color:red;">Server running successfully</h1>');
 });
   

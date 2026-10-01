@@ -6,27 +6,7 @@ const chatMessage = require("../model/chatBoxModel");
 
 
 // 📩 User Sends Message
-/* exports.sendMessageController = async (req, res) => {
-  console.log("inside sendMessgeController");
-  const userId = req.userId
-  try {
-    const { message } = req.body;
 
-    if (!message) {
-      return res.status(400).json({ error: " message are required" });
-    }
-
-    // Save the message from user
-    const newMessage = new chatMessage({ message,userId });
-    await newMessage.save();
-
-    res.status(201).json(newMessage);
-  } catch (error) {
-    console.error("Error sending message:", error);
-    res.status(500).json({ error: "Failed to send message" });
-  }
-};
- */
   exports.sendMessageController = async (req, res) => {
   console.log("inside sendMessageController");
   console.log("User ID:", req.userId);
@@ -68,110 +48,7 @@ const chatMessage = require("../model/chatBoxModel");
 //admin reply
 
 
- /* exports.replyMessageController = async (req, res) => {
-  console.log("inside replyMessageController");
-
-  const { messageId } = req.params;  
-  const { reply, role } = req.body;  
-
-  console.log("Received data:", { messageId, reply, role });
-
-  try {
-    // Validate role
-    if (role !== "admin") {
-      return res.status(403).json({ message: "Only admin can reply to messages." });
-    }
-
-    // Ensure messageId is valid
-    if (!messageId) {
-      return res.status(400).json({ message: "Invalid message ID." });
-    }
-
-    // Find the message and only update the "reply" field
-    const updateMessage = await chatMessage.findByIdAndUpdate(
-      messageId,  
-      { $set: { reply } },  // ✅ Only update the reply field
-      { new: true }  
-    );
-
-    if (!updateMessage) {
-      return res.status(404).json({ message: "Message not found." });
-    }
-
-    console.log("Updated message:", updateMessage);
-
-    res.status(200).json(updateMessage);
-  } catch (err) {
-    console.error("Error updating message:", err);
-    res.status(500).json({ message: "Error updating message", error: err.message });
-  }
-};
-  */
-
-
-// 📨 Fetch All Messages
- /* exports.getAllMessagesController = async (req, res) => {
-  console.log("inside allMessgeController");
-  try {
-    const messages = await chatMessage.find().sort({ timestamp: +1 }); // Latest first
-    res.status(200).json(messages);
-  } catch (error) {
-    console.error("Error fetching messages:", error);
-    res.status(500).json({ error: "Failed to retrieve messages" });
-  }
-};
-  */
- /*  exports.getAllMessagesController = async (req, res) => {
-  console.log("Inside getAllMessagesController");
-  try {
-    const messages = await chatMessage.aggregate([
-      { $sort: { timestamp: 1 } }, // Sort messages by time
-      { 
-        $group: { 
-          _id: "$userId", // Group by student ID
-          messages: { $push: "$$ROOT" } // Store all messages for that user
-        } 
-      }
-    ]);
-    res.status(200).json(messages);
-  } catch (error) {
-    console.error("Error fetching messages:", error);
-    res.status(500).json({ error: "Failed to retrieve messages" });
-  }
-};
-  */
-
-
-
-
-/* exports.getAllMessagesController = async (req, res) => {
-  console.log("Inside getAllMessagesController");
-  console.log("Request Role:", req.role); // Log extracted role
-
-  try {
-    if (req.role !== "admin") {
-      console.log("Access denied. Not an admin."); // Debugging log
-      return res.status(403).json({ error: "Access denied. Admins only." });
-    }
-
-    const messages = await chatMessage.aggregate([
-      { $sort: { timestamp: 1 } }, // Sort messages by time
-      { 
-        $group: { 
-          _id: "$userId", 
-          messages: { $push: "$$ROOT" } 
-        } 
-      }
-    ]);
-
-    console.log("Messages fetched successfully.");
-    res.status(200).json(messages);
-  } catch (error) {
-    console.error("Error fetching messages:", error);
-    res.status(500).json({ error: "Failed to retrieve messages" });
-  }
-}; */
-
+ 
 
  exports.getAllMessagesController = async (req, res) => {
   console.log("Inside getAllMessagesController");
@@ -248,24 +125,8 @@ const chatMessage = require("../model/chatBoxModel");
 //delete messages
 
 
-/*  exports.removeMessgeController = async (req, res) => {
-  console.log("Inside removeMessageController");
-  const { messageId } = req.params;
 
-  try {
-    const deleteMessage = await chatMessage.findByIdAndDelete(messageId);
-    
-    if (!deleteMessage) {
-      return res.status(404).json({ error: "Message not found" });
-    }
-
-    res.status(200).json({ message: "Message deleted successfully", deleteMessage });
-  } catch (err) {
-    console.error("Error deleting message:", err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};  
- */
+ 
 exports.removeMessgeController = async (req, res) => {
   console.log("Inside removeMessageController");
   const { messageId } = req.params;
@@ -292,48 +153,8 @@ exports.removeMessgeController = async (req, res) => {
 };
 
 //reply remove
- /* exports.removeReplyController = async (req, res) => {
-  console.log("Inside removeReplyController");
-  const { messageId } = req.params;
 
-  try {
-    const message = await chatMessage.findById(messageId);
-
-    if (!message) {
-      return res.status(404).json({ error: "Message not found" });
-    }
-
-    // Only update the reply field to null (or empty string) instead of deleting the message
-    message.reply = null; // or message.reply = "";
-    await message.save();
-
-    res.status(200).json({ message: "Reply removed successfully", updatedMessage: message });
-  } catch (err) {
-    console.error("Error removing reply:", err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-}; */
-/* exports.removeReplyController = async (req, res) => {
-  console.log("Inside removeReplyController");
-  const { messageId } = req.params;
-
-  try {
-    const message = await chatMessage.findById(messageId);
-
-    if (!message) {
-      return res.status(404).json({ error: "Message not found" });
-    }
-
-    // ✅ Set reply to null while keeping the original message
-    message.reply = null;
-    await message.save();
-
-    res.status(200).json({ message: "Reply removed successfully" });
-  } catch (err) {
-    console.error("Error removing reply:", err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-}; */
+ 
 exports.removeReplyController = async (req, res) => {
   console.log("Inside removeReplyController");
   const { messageId } = req.params;
@@ -411,4 +232,4 @@ exports.removeReplyController = async (req, res) => {
  };
 
 
- //remove
+ 
